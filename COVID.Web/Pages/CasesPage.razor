@@ -1,0 +1,31 @@
+﻿@page "/Cases"
+@using COVID.Component.Models
+@using COVID.Web.Interfaces
+
+<PageTitle>COVID Cases by State</PageTitle>
+
+
+<h1>COVID Cases by State</h1>
+
+<p>This page allows you to view </p>
+
+@if (vm == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Loaded.</p>
+}
+
+@code {
+
+    [Inject] IComponenentService<CasesPageVM> casesPageComponentService { get; set; }
+
+    private CasesPageVM vm { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        vm = await casesPageComponentService.BuildAsync();
+    }
+}
