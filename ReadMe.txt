@@ -54,3 +54,42 @@ Developer's Journal
 
   At this point, the application compiles and the Blazor website renders.  I can navigate to the Cases page and the view model gets hydrated with dummy data.
 
+- Final step in the setup process was to create a GIT repository for the solution and push it to GitHub.  
+
+
+12/31/2024 - Build the API Client
+---------------------------------
+
+- First thing was to identify the data being returned by the API.  I navigated to the various JSON files that are served up by the API and found that it supports two
+  data structures.  So I created two classes to correspond to each.  I copied the JSON values into the class and proceeded to turn it into the class so I would have the names
+  right.  The resulting classes were named the following
+
+  * StateSummary
+  * UnitedStatesSummary
+
+  I don't see any instructions regarding the United States-level data, but decided to include it in the API Client anyway.  
+
+- Next was to create the interface(s).  In this case, I went ahead and created a generic interface namef IApiClientService - this is probably the wrong choice, but I wanted to
+  demonstrate usage of a generic interface.  I think this is pretty useful for RESTful APIs as each data point would have the same methods supported.  However, in this case,
+  the two data points are handled differently by the API so it might have made more sense to have two custom interfaces. Anywho, the following methods are required to implement 
+  services that are derived from IApiClientService
+
+  * GetAsync         - retrieves a single record for the specifield identifier
+  * GetByDateAsync   - retrieves a single record for the specified identifier on the specified date
+  * GetHistoricAsync - retrieves a list of records for the specified identifier
+  * GetAllAsync      - retrieves a list of all records
+
+- Next I created the two API client services. Note that I have utilzied RestSharp to handle the API calls.  
+
+  * StatesApiClientService       - implements all four methods in the interface.  state abbreviation is expected to be provided as the identifier
+  * UnitedStatesApiClientService - implements two of the fourns methods in the interface.  "us" is expected to be provided as the identifier.  note that this parameter is not
+                                   needed - however, since we are demonstrating usage of a generic interface, it must be provided.
+
+- Finally, I created the tests.  For both of the test classes, I have utilized the dependency injection framework.  This is probably not necessary since there are not dependent
+  services.  But in the real world, there will be so I always utilize it in testing.
+
+  * StatesApiClientServiceTests       - each of the four methods implemented in StatesApiClientService are executed and the results are verified.
+  * UnitedStatesApiClientServiceTests - the two methods that are implemented in UnitedStatesApiClientService are executed and the results are verified.  The other two
+	                                    methods are called and verified to raise a NotImplementedException.
+
+Note that I had to include the Base URL for one of the service methods but not for the others.  Weird.
