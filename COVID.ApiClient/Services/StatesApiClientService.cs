@@ -85,6 +85,28 @@ namespace COVID.ApiClient.Services
         }
         public async Task<List<StateSummary>> GetAllAsync()
         {
+            string url = "https://api.covidtracking.com/v1/states/daily.json";
+
+            try
+            {
+                var client = new RestClient();
+
+                var request = new RestRequest(url);
+
+                request.Method = Method.Get;
+
+                var response = await client.GetAsync<List<StateSummary>>(request);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                // this exception should be logged
+                throw;
+            }
+        }
+        public async Task<List<StateSummary>> GetCurrentAsync()
+        {
             string url = "https://api.covidtracking.com/v1/states/current.json";
 
             try

@@ -1,7 +1,9 @@
-﻿namespace COVID.Component.Models
+﻿using COVID.Web.Models.ListItems;
+
+namespace COVID.Component.Models
 {
     public class CasesPageVM
     {
-        public bool IsLoaded { get; set; } = false;
+        public List<StateSummaryListItem> States { get; set; }
     }
 }

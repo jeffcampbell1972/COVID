@@ -9,7 +9,7 @@ namespace COVID.Tests
     public sealed class StatesApiClientServiceTests
     {
         IServiceProvider _serviceProvider;
-        IApiClientService<StateSummary> _stateApiClientService;
+        IApiClientService<StateSummary> _statesApiClientService;
 
         public StatesApiClientServiceTests()
         {
@@ -18,7 +18,7 @@ namespace COVID.Tests
 
             _serviceProvider = services.BuildServiceProvider();
 
-            _stateApiClientService = _serviceProvider.GetService<IApiClientService<StateSummary>>();
+            _statesApiClientService = _serviceProvider.GetService<IApiClientService<StateSummary>>();
 
         }
         [TestMethod]
@@ -26,7 +26,22 @@ namespace COVID.Tests
         {
             try
             {
-                var statesummaries = await _stateApiClientService.GetAllAsync();
+                var statesummaries = await _statesApiClientService.GetAllAsync();
+
+                Assert.IsNotNull(statesummaries);
+                Assert.IsTrue(statesummaries.Count() > 0);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.ToString());
+            }
+        }
+        [TestMethod]
+        public async Task GetCurrentAsyncTest()
+        {
+            try
+            {
+                var statesummaries = await _statesApiClientService.GetCurrentAsync();
 
                 Assert.IsNotNull(statesummaries);
                 Assert.IsTrue(statesummaries.Count() == 56);
@@ -44,7 +59,7 @@ namespace COVID.Tests
             {
                 string arizona = "az";
 
-                var statesummaries = await _stateApiClientService.GetHistoricAsync(arizona);
+                var statesummaries = await _statesApiClientService.GetHistoricAsync(arizona);
 
                 Assert.IsNotNull(statesummaries);
                 Assert.IsTrue(statesummaries.Count() > 0);  
@@ -61,7 +76,7 @@ namespace COVID.Tests
             {
                 string arizona = "az";
 
-                var statesummary = await _stateApiClientService.GetAsync(arizona);
+                var statesummary = await _statesApiClientService.GetAsync(arizona);
 
                 Assert.IsNotNull(statesummary);
             }
@@ -78,7 +93,7 @@ namespace COVID.Tests
                 string arizona = "az";
                 string may1 = "20200501";
 
-                var statesummary = await _stateApiClientService.GetByDateAsync(arizona, may1);
+                var statesummary = await _statesApiClientService.GetByDateAsync(arizona, may1);
 
                 Assert.IsNotNull(statesummary);
             }

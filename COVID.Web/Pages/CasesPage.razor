@@ -15,7 +15,20 @@
 }
 else
 {
-    <p>Loaded.</p>
+    <TelerikGrid 
+        Data="vm.States"
+        Sortable=true
+        
+    >
+        <GridColumns>
+            <GridColumn Field="Date"></GridColumn>
+            <GridColumn Field="State"></GridColumn>
+            <GridColumn Field="NumTotal"></GridColumn>
+            <GridColumn Field="NumPositive"></GridColumn>
+            <GridColumn Field="NumNegative"></GridColumn>
+            <GridColumn Field="Hospitalization"></GridColumn>
+        </GridColumns>
+    </TelerikGrid>
 }
 
 @code {

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\COVID.ApiClient\COVID.ApiClient.csproj" />
+    <ProjectReference Include="..\COVID.Web\COVID.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

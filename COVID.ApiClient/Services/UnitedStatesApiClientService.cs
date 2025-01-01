@@ -70,5 +70,27 @@ namespace COVID.ApiClient.Services
                 throw;
             }
         }
+        public async Task<List<UnitedStatesSummary>> GetCurrentAsync()
+        {
+            string url = "https://api.covidtracking.com/v1/us/current.json";
+
+            try
+            {
+                var client = new RestClient();
+
+                var request = new RestRequest(url);
+
+                request.Method = Method.Get;
+
+                var response = await client.GetAsync<List<UnitedStatesSummary>>(request);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                // this exception should be logged
+                throw;
+            }
+        }
     }
 }

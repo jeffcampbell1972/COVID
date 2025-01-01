@@ -14,5 +14,6 @@ namespace COVID.ApiClient.Interfaces
         public Task<T> GetByDateAsync(string identifier, string date);
         public Task<List<T>> GetHistoricAsync(string identifier);
         public Task<List<T>> GetAllAsync();
+        public Task<List<T>> GetCurrentAsync();
     }
 }

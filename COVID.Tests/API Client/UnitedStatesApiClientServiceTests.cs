@@ -9,7 +9,7 @@ namespace COVID.Tests
     public sealed class UnitedStatesApiClientServiceTests
     {
         IServiceProvider _serviceProvider;
-        IApiClientService<UnitedStatesSummary> _stateApiClientService;
+        IApiClientService<UnitedStatesSummary> _unitedStatesApiClientService;
 
         public UnitedStatesApiClientServiceTests()
         {
@@ -18,7 +18,7 @@ namespace COVID.Tests
 
             _serviceProvider = services.BuildServiceProvider();
 
-            _stateApiClientService = _serviceProvider.GetService<IApiClientService<UnitedStatesSummary>>();
+            _unitedStatesApiClientService = _serviceProvider.GetService<IApiClientService<UnitedStatesSummary>>();
 
         }
         [TestMethod]
@@ -26,7 +26,7 @@ namespace COVID.Tests
         {
             try
             {
-                var unitedStatesSummaries = await _stateApiClientService.GetAllAsync();
+                var unitedStatesSummaries = await _unitedStatesApiClientService.GetAllAsync();
 
                 Assert.IsNotNull(unitedStatesSummaries);
                 Assert.IsTrue(unitedStatesSummaries.Count() > 0);
@@ -36,7 +36,21 @@ namespace COVID.Tests
                 Assert.Fail(ex.ToString());
             }
         }
+        [TestMethod]
+        public async Task GetCurrentAsyncTest()
+        {
+            try
+            {
+                var unitedStatesSummaries = await _unitedStatesApiClientService.GetCurrentAsync();
 
+                Assert.IsNotNull(unitedStatesSummaries);
+                Assert.IsTrue(unitedStatesSummaries.Count() == 1);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.ToString());
+            }
+        }
         [TestMethod]
         public async Task GetHistoricAsyncTest()
         {
@@ -44,7 +58,7 @@ namespace COVID.Tests
             {
                 string identifier = "az";
 
-                var unitedStatesSummaries = await _stateApiClientService.GetHistoricAsync(identifier);
+                var unitedStatesSummaries = await _unitedStatesApiClientService.GetHistoricAsync(identifier);
 
                 Assert.Fail("Should raise exception.");
             }
@@ -60,7 +74,7 @@ namespace COVID.Tests
             {
                 string identifier = "az";
 
-                var unitedStatesSummary = await _stateApiClientService.GetAsync(identifier);
+                var unitedStatesSummary = await _unitedStatesApiClientService.GetAsync(identifier);
 
                 Assert.Fail("Should raise exception.");
             }
@@ -77,7 +91,7 @@ namespace COVID.Tests
                 string identifier = "us";
                 string may1 = "20200501";
 
-                var unitedStatesSummary = await _stateApiClientService.GetByDateAsync(identifier, may1);
+                var unitedStatesSummary = await _unitedStatesApiClientService.GetByDateAsync(identifier, may1);
 
                 Assert.IsNotNull(unitedStatesSummary);
             }
