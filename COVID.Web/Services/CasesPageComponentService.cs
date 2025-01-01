@@ -3,6 +3,7 @@ using COVID.Component.Models;
 using COVID.ApiClient.Interfaces;
 using COVID.ApiClient.Models;
 using COVID.Web.Models.ListItems;
+using COVID.Web.Filters;
 
 namespace COVID.Web.Services
 {
@@ -28,12 +29,12 @@ namespace COVID.Web.Services
                 NumNegative = x.negative ?? 0,
                 Hospitalization = x.hospitalized ?? 0
             })
-            .OrderByDescending(x => x.NumTotal)
+            .OrderByDescending(x => x.NumPositive)
             .ToList();
 
             var vm = new CasesPageVM
             {
-                States = listItems
+                Cases = listItems
             };
 
             return vm;

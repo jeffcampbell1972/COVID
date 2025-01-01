@@ -15,18 +15,18 @@
 }
 else
 {
-    <TelerikGrid 
-        Data="vm.States"
+    <TelerikGrid Data="@vm.Cases"
+        FilterMode="GridFilterMode.FilterMenu"
         Sortable=true
         
     >
         <GridColumns>
-            <GridColumn Field="Date"></GridColumn>
-            <GridColumn Field="State"></GridColumn>
-            <GridColumn Field="NumTotal"></GridColumn>
-            <GridColumn Field="NumPositive"></GridColumn>
-            <GridColumn Field="NumNegative"></GridColumn>
-            <GridColumn Field="Hospitalization"></GridColumn>
+            <GridColumn Field="Date" Title="Data Collected" DisplayFormat="{0:d}"></GridColumn>
+            <GridColumn Field="State" Title="State"></GridColumn>
+            <GridColumn Field="NumTotal" Title="Total Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
+            <GridColumn Field="NumPositive" Title="Positive Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
+            <GridColumn Field="NumNegative" Title="Negative Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
+            <GridColumn Field="Hospitalization" Title="Hospitalization Rates" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
         </GridColumns>
     </TelerikGrid>
 }

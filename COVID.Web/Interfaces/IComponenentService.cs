@@ -1,4 +1,6 @@
-﻿namespace COVID.Web.Interfaces
+﻿using COVID.Web.Filters;
+
+namespace COVID.Web.Interfaces
 {
     public interface IComponenentService<T>
     {

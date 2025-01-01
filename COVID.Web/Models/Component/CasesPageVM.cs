@@ -4,6 +4,6 @@ namespace COVID.Component.Models
 {
     public class CasesPageVM
     {
-        public List<StateSummaryListItem> States { get; set; }
+        public List<StateSummaryListItem> Cases { get; set; }
     }
 }

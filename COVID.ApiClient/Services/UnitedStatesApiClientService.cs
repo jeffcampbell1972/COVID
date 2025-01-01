@@ -15,14 +15,14 @@ namespace COVID.ApiClient.Services
         {
         }
 
-        public async Task<UnitedStatesSummary> GetAsync(string stateAbbreviation)
+        public async Task<UnitedStatesSummary> GetAsync(string identifier)
         {
             throw new NotImplementedException("Not relvant for United States-level calls.");
         }
         public async Task<UnitedStatesSummary> GetByDateAsync(string identifier, string date)
         {
             
-            string url = string.Format(" https://api.covidtracking.com/v1/{0}/{1}.json", identifier, date);
+            string url = string.Format(" https://api.covidtracking.com/v1/{0}/{1}.json", identifier.ToLower(), date);
 
             try
             {
@@ -43,7 +43,7 @@ namespace COVID.ApiClient.Services
             }
 
         }
-        public async Task<List<UnitedStatesSummary>> GetHistoricAsync(string stateAbbreviation)
+        public async Task<List<UnitedStatesSummary>> GetHistoricAsync(string identifier)
         {
 
             throw new NotImplementedException("Not relvant for United States-level calls.");

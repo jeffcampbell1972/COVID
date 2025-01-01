@@ -14,7 +14,10 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddTelerikBlazor();
 
 builder.Services.AddScoped<IApiClientService<StateSummary>, StatesApiClientService>();
+builder.Services.AddScoped<IStatesInfoApiClientService, StatesInfoApiClientService>();
+
 builder.Services.AddScoped<IComponenentService<CasesPageVM>, CasesPageComponentService>();
+builder.Services.AddScoped<IComponenentService<StatesPageVM>, StatesPageComponentService>();
 
 var app = builder.Build();
 

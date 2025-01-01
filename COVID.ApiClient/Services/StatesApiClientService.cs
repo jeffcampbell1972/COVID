@@ -40,7 +40,7 @@ namespace COVID.ApiClient.Services
         public async Task<StateSummary> GetByDateAsync(string stateAbbreviation, string date)
         {
             
-            string url = string.Format("https://api.covidtracking.com/v1/states/{0}/{1}.json", stateAbbreviation, date);
+            string url = string.Format("https://api.covidtracking.com/v1/states/{0}/{1}.json", stateAbbreviation.ToLower(), date);
 
             try
             {
@@ -63,7 +63,7 @@ namespace COVID.ApiClient.Services
         }
         public async Task<List<StateSummary>> GetHistoricAsync(string stateAbbreviation)
         {
-            string url = string.Format("https://api.covidtracking.com/v1/states/{0}/daily.json", stateAbbreviation);
+            string url = string.Format("https://api.covidtracking.com/v1/states/{0}/daily.json", stateAbbreviation.ToLower());
 
             try
             {

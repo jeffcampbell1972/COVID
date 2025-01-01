@@ -93,3 +93,10 @@ Developer's Journal
 	                                    methods are called and verified to raise a NotImplementedException.
 
 Note that I had to include the Base URL for one of the service methods but not for the others.  Weird.
+
+1/1/2025 - Install Telerik for Blazor
+-------------------------------------
+
+- I had left things off with the API client project largely complete.  In the process of the getting the grid to render, I discovered a bug in one of the API client methods.   
+  Specifically, the GetAllAsync() method for states was pulling from the current.json file instead of the daily.json file.  That got fixed and I went ahead and added another
+  method to the interface for 
