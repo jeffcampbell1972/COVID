@@ -1,0 +1,28 @@
+﻿
+@using COVID.Component.Models
+@using COVID.Web.Filters
+@using COVID.Web.Interfaces
+@using COVID.Web.Models.ListItems
+
+
+<TelerikGrid Data="@Cases"
+             FilterMode="@FilterMode"
+             Sortable=true
+>
+    <GridColumns>
+        <GridColumn Field="Date" Title="Data Collected" DisplayFormat="{0:d}" ></GridColumn>
+        <GridColumn Field="State" Title="State" FilterMenuType="@FilterMenuType.CheckBoxList"></GridColumn>
+        <GridColumn Field="NumTotal" Title="Total Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
+        <GridColumn Field="NumPositive" Title="Positive Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
+        <GridColumn Field="NumNegative" Title="Negative Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
+        <GridColumn Field="Hospitalization" Title="Hospitalization Rates" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
+    </GridColumns>
+</TelerikGrid>
+
+
+@code {
+
+    [Parameter] public List<StateSummaryListItem> Cases { get; set; }
+    [Parameter] public GridFilterMode FilterMode { get; set; }
+
+}

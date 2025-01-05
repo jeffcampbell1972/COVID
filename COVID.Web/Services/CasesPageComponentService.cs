@@ -16,7 +16,7 @@ namespace COVID.Web.Services
             _statesApiClientService = statesApiClientService;
         }
 
-        public async Task<CasesPageVM> BuildAsync()
+        public async Task<CasesPageVM> BuildAsync(ComponentBuildFilter filter)
         {
             var stateSummaries = await _statesApiClientService.GetAllAsync();
 

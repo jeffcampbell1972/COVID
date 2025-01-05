@@ -1,0 +1,44 @@
+﻿
+@using COVID.Component.Models
+@using COVID.Web.Filters
+@using COVID.Web.Interfaces
+@using COVID.Web.Models.ListItems
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 FormLabel">
+            COVID 19 Website:
+        </div>
+        <div class="col-10">
+            @StateInfo.Covid19SiteURL
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2 FormLabel">
+            Twitter Handle:
+        </div>
+        <div class="col-10">
+            @StateInfo.TwitterHandle
+        </div>
+    </div>
+    <div class="row"><div class="col">&nbsp;</div></div>
+    <div class="row">
+        <div class="col FormLabel">
+            Notes:
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col">
+            <TelerikTextArea @bind-Value="@StateInfo.Notes"
+                             ReadOnly="true"
+                             Rows="10" />
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter] public StateInfoListItem StateInfo { get; set; }
+
+}

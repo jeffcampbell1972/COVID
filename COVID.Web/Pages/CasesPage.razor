@@ -1,5 +1,7 @@
 ﻿@page "/Cases"
 @using COVID.Component.Models
+@using COVID.Web.Components
+@using COVID.Web.Filters
 @using COVID.Web.Interfaces
 
 <PageTitle>COVID Cases by State</PageTitle>
@@ -9,36 +11,30 @@
 
 <p>This page allows you to view </p>
 
-@if (vm == null)
+
+<TelerikLoaderContainer OverlayThemeColor="@ThemeConstants.Loader.ThemeColor.Light"
+                        Visible="@( vm == null )">
+    <Template>
+        <TelerikLoader Type="@LoaderType.InfiniteSpinner"
+                       Size="@ThemeConstants.Loader.Size.Large" />
+    </Template>
+</TelerikLoaderContainer>
+
+
+@if (vm != null)
 {
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <TelerikGrid Data="@vm.Cases"
-        FilterMode="GridFilterMode.FilterMenu"
-        Sortable=true
-        
-    >
-        <GridColumns>
-            <GridColumn Field="Date" Title="Data Collected" DisplayFormat="{0:d}"></GridColumn>
-            <GridColumn Field="State" Title="State"></GridColumn>
-            <GridColumn Field="NumTotal" Title="Total Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
-            <GridColumn Field="NumPositive" Title="Positive Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
-            <GridColumn Field="NumNegative" Title="Negative Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
-            <GridColumn Field="Hospitalization" Title="Hospitalization Rates" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
-        </GridColumns>
-    </TelerikGrid>
+    <CasesGrid Cases="@vm.Cases" FilterMode="GridFilterMode.FilterMenu"></CasesGrid>
 }
 
 @code {
 
     [Inject] IComponenentService<CasesPageVM> casesPageComponentService { get; set; }
 
+    private ComponentBuildFilter filter = new ComponentBuildFilter();
     private CasesPageVM vm { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        vm = await casesPageComponentService.BuildAsync();
+        vm = await casesPageComponentService.BuildAsync(filter);  
     }
 }

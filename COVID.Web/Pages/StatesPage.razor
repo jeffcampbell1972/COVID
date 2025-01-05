@@ -1,6 +1,8 @@
 ﻿@page "/States"
 
 @using COVID.Component.Models
+@using COVID.Web.Components
+@using COVID.Web.Filters
 @using COVID.Web.Interfaces
 
 <PageTitle>COVID Cases by State</PageTitle>
@@ -10,89 +12,56 @@
 
 <p>This page allows you to view each state individually.  It also includes some state-level information which might be helpful.</p>
 
-@if (vm == null)
+<TelerikLoaderContainer OverlayThemeColor="@ThemeConstants.Loader.ThemeColor.Light"
+Visible="@( ShowLoader )">
+    <Template>
+        <TelerikLoader Type="@LoaderType.InfiniteSpinner"
+        Size="@ThemeConstants.Loader.Size.Large" />
+    </Template>
+</TelerikLoaderContainer>
+
+@if (vm != null)
 {
-    <p><em>Loading...</em></p>
-}
-else
-{
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-1 FormLabel">
-                Choose a State:
-            </div>
-            <div class="col-11">
-                <TelerikDropDownList Data="vm.States"
-                                     TextField="Name"
-                                     ValueField="Abbreviation"
-                                     @bind-Value="vm.CurrState.Abbreviation"
-                                     Width="300px">
-                </TelerikDropDownList>
-            </div>
-        </div>
-        <div class="row"><div class="col">&nbsp;</div></div>
-        <div class="row">
-            <div class="col-1 FormLabel">
-                COVID 19 Website:
-            </div>
-            <div class="col-11">
-                @vm.CurrState.Covid19SiteURL
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-1 FormLabel">
-                Twitter Handle:
-            </div>
-            <div class="col-11">
-                @vm.CurrState.TwitterHandle
-            </div>
-        </div>
-        <div class="row"><div class="col">&nbsp;</div></div>
-        <div class="row">
-            <div class="col FormLabel">
-                Notes:
-            </div>
-        </div>
-        <div class="row ">
-            <div class="col">
-                <TelerikTextArea 
-                    @bind-Value="@vm.CurrState.Notes"
-                    ReadOnly="true"
-                    Rows="10" />
-            </div>
-        </div>
-    </div>
-
-  
-
+    <CompnentBuildFilterForm 
+    States="@vm.States" 
+    Filter="@_filter"
+    OnFilterChanged="OnFilterChanged">
+    </CompnentBuildFilterForm>
     <br />
-<hr />
-    <TelerikGrid Data="@vm.Cases"
-    FilterMode="GridFilterMode.FilterMenu"
-    Sortable=true
-
-    >
-        <GridColumns>
-            <GridColumn Field="Date" Title="Data Collected" DisplayFormat="{0:d}"></GridColumn>
-            <GridColumn Field="State" Title="State"></GridColumn>
-            <GridColumn Field="NumTotal" Title="Total Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
-            <GridColumn Field="NumPositive" Title="Positive Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
-            <GridColumn Field="NumNegative" Title="Negative Cases" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
-            <GridColumn Field="Hospitalization" Title="Hospitalization Rates" DisplayFormat="{0:n0}" Filterable="false"></GridColumn>
-        </GridColumns>
-    </TelerikGrid>
+    <StateDetails StateInfo="@vm.CurrState"></StateDetails>
+    <br />
+    <hr />
+    <CasesGrid Cases="@vm.Cases" FilterMode="GridFilterMode.None"></CasesGrid>
 }
 
 @code {
 
     [Inject] IComponenentService<StatesPageVM> statesPageComponentService { get; set; }
 
-    private StatesPageVM vm { get; set; }
+    ComponentBuildFilter _filter = new ComponentBuildFilter ();
+    private StatesPageVM vm { get; set; } 
+    private bool ShowLoader { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
-        
-        vm = await statesPageComponentService.BuildAsync();
+        await BuildComponent();
+
+        if (vm != null)
+        {
+            _filter.CollectionDate = vm.MaxDate;
+            _filter.StateAbbreviation = vm.CurrState.Abbreviation;
+        }
+    }
+    private async Task OnFilterChanged(ComponentBuildFilter filter)
+    {
+        _filter = filter;
+
+        await BuildComponent();
+    }
+    private async Task BuildComponent()
+    {
+        ShowLoader = true;
+        vm = await statesPageComponentService.BuildAsync(_filter);  
+        ShowLoader = false;
     }
 }

@@ -1,0 +1,65 @@
+﻿
+@using COVID.Component.Models
+@using COVID.Web.Filters
+@using COVID.Web.Interfaces
+@using COVID.Web.Models.ListItems
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 FormLabel">
+            Choose a State:
+        </div>
+        <div class="col-4">
+            <TelerikDropDownList Data="States"
+            TextField="Name"
+            ValueField="Abbreviation"
+            Value="@Filter.StateAbbreviation"
+            ValueChanged="@( (string newValue) => OnStateValueChanged(newValue) )"
+            Width="300px">
+            </TelerikDropDownList>
+        </div>
+        <div class="col-2 FormLabel">
+            Choose a Date:
+        </div>
+        <div class="col-4">
+            <TelerikDatePicker 
+            Format="dd MMMM yyyy"
+            Min="@MinDate"
+            Max="@MaxDate"
+            Value="@Filter.CollectionDate"
+            ValueChanged="@( (DateTime newValue) => OnCollectionDateValueChanged(newValue) )"
+            Width="200px">
+            </TelerikDatePicker>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter] public ComponentBuildFilter Filter { get; set; }
+    [Parameter] public List<StateInfoListItem> States { get; set; }
+    [Parameter] public EventCallback<ComponentBuildFilter> OnFilterChanged { get; set; }
+
+    private DateTime MinDate { get; set; }
+    private DateTime MaxDate { get; set; }
+
+
+    private DateTime DatePickerValue { get; set; } 
+
+    protected override async Task OnInitializedAsync()
+    {
+        MinDate = DateTime.Parse("03/07/2020");
+        MaxDate = DateTime.Parse("03/07/2021");
+    }
+
+    private async Task OnStateValueChanged(string newValue)
+    {
+        Filter.StateAbbreviation = newValue;
+        OnFilterChanged.InvokeAsync(Filter);
+    }
+    private async Task OnCollectionDateValueChanged(DateTime newValue)
+    {
+        Filter.CollectionDate = newValue;
+        OnFilterChanged.InvokeAsync(Filter);
+    }
+}

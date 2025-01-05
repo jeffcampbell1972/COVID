@@ -2,6 +2,7 @@
 using COVID.ApiClient.Models;
 using COVID.ApiClient.Services;
 using COVID.Component.Models;
+using COVID.Web.Filters;
 using COVID.Web.Interfaces;
 using COVID.Web.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +32,8 @@ namespace COVID.Component.Tests
         {
             try
             {
-                var vm = await _casesPageComponentService.BuildAsync();
+                ComponentBuildFilter filter = new ComponentBuildFilter();
+                var vm = await _casesPageComponentService.BuildAsync(filter);
 
                 Assert.IsNotNull(vm);
             }

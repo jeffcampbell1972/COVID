@@ -18,7 +18,7 @@ namespace COVID.Web.Services
             _statesInfoApiClientService = statesInfoApiClientService;
         }
 
-        public async Task<StatesPageVM> BuildAsync()
+        public async Task<StatesPageVM> BuildAsync(ComponentBuildFilter filter)
         {
             var statesInfoData = await _statesInfoApiClientService.GetAllAsync();
 
@@ -33,26 +33,46 @@ namespace COVID.Web.Services
             .OrderBy(x => x.Name)
             .ToList();
 
-            var currState = statesInfo.First();
-            
-            var stateSummariesData = await _statesApiClientService.GetHistoricAsync(currState.Abbreviation);
-
-            var stateSummaries = stateSummariesData.Select(x => new StateSummaryListItem
+            StateInfoListItem currState;
+            if (string.IsNullOrEmpty(filter.StateAbbreviation))  // if no filter, grab first state in list
             {
-                Date = ParseDate(x.date) ,
-                State = x.state ,
-                NumTotal = x.total ?? 0,
-                NumPositive = x.positive ?? 0,
-                NumNegative = x.negative ?? 0,
-                Hospitalization = x.hospitalized ?? 0
-            })
-            .OrderByDescending(x => x.NumPositive)
-            .ToList();
+                currState = statesInfo.First();
+            }
+            else
+            { 
+                currState = statesInfo.Single(x => x.Abbreviation == filter.StateAbbreviation);  
+            }
+            string collectionDate = "20210307";
+
+            if (filter.CollectionDate != DateTime.MinValue)
+            {
+                collectionDate = UnParseDate(filter.CollectionDate);
+            }
+
+            var stateSummariesData = await _statesApiClientService.GetByDateAsync(currState.Abbreviation, collectionDate);
+
+            var stateSummaries = new List<StateSummaryListItem>
+            {
+                new StateSummaryListItem
+                {
+                    Date = ParseDate(stateSummariesData.date) ,
+                    State = stateSummariesData.state ,
+                    NumTotal = stateSummariesData.total ?? 0,
+                    NumPositive = stateSummariesData.positive ?? 0,
+                    NumNegative = stateSummariesData.negative ?? 0,
+                    Hospitalization = stateSummariesData.hospitalized ?? 0
+                }
+            };
+
+            var minDate = stateSummaries.OrderBy(x => x.Date).First().Date;
+            var maxDate = stateSummaries.OrderByDescending(x => x.Date).First().Date;
 
             var vm = new StatesPageVM
             {
                 CurrState = currState,
                 States = statesInfo,
+                MinDate = minDate,
+                MaxDate = maxDate,
                 Cases = stateSummaries
             };
 
@@ -71,6 +91,14 @@ namespace COVID.Web.Services
             DateTime parsedDate = DateTime.Parse(dateToParse);
 
             return parsedDate;
+        }
+        private string UnParseDate(DateTime date)
+        {
+            string year = date.Year.ToString();
+            string month = date.Month.ToString("D2");
+            string day = date.Day.ToString("D2");
+
+            return string.Format("{0}{1}{2}", year, month, day);
         }
     }
 }
