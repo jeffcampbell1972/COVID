@@ -2,7 +2,7 @@
 
 namespace COVID.Component.Models
 {
-    public class CasesPageVM
+    public class HistoricalPageVM
     {
         public List<StateSummaryListItem> Cases { get; set; }
     }

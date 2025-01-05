@@ -10,10 +10,12 @@
 
 <h1>State COVID Information</h1>
 
-<p>This page allows you to view each state individually.  It also includes some state-level information which might be helpful.</p>
+<p>
+    This page allows you to view each state individually along with snapshot of the cases data for a specified date.  
+    It also includes some state-level information which might be helpful.
+</p>
 
-<TelerikLoaderContainer OverlayThemeColor="@ThemeConstants.Loader.ThemeColor.Light"
-Visible="@( ShowLoader )">
+<TelerikLoaderContainer OverlayThemeColor="@ThemeConstants.Loader.ThemeColor.Light" Visible="@( ShowLoader )">
     <Template>
         <TelerikLoader Type="@LoaderType.InfiniteSpinner"
         Size="@ThemeConstants.Loader.Size.Large" />
@@ -22,16 +24,25 @@ Visible="@( ShowLoader )">
 
 @if (vm != null)
 {
-    <CompnentBuildFilterForm 
-    States="@vm.States" 
-    Filter="@_filter"
-    OnFilterChanged="OnFilterChanged">
-    </CompnentBuildFilterForm>
+    <ComponentBuildFilterForm 
+        States="@vm.States" 
+        Filter="@_filter"
+        OnFilterChanged="OnFilterChanged">
+    </ComponentBuildFilterForm>
+
     <br />
-    <StateDetails StateInfo="@vm.CurrState"></StateDetails>
+
+    <StateDetails 
+        StateInfo="@vm.CurrState">
+    </StateDetails>
+
     <br />
     <hr />
-    <CasesGrid Cases="@vm.Cases" FilterMode="GridFilterMode.None"></CasesGrid>
+
+    <CasesGrid 
+        Cases="@vm.Cases" 
+        FilterMode="GridFilterMode.None">
+    </CasesGrid>
 }
 
 @code {

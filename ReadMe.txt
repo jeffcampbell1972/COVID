@@ -2,9 +2,22 @@ COVID
 -----
 The COVID app displays information provided by the COVID Tracking Project's API.  
 
+--------
 Overview
 --------
-Since the data is provided, there are only two tiers in this application's stack
+There are three pages supported in this application.
+
+	Index  - landing page for the app
+
+	Cases  - provides the full historical list of data from the API.  It is unclear if there are real-life use-cases for this page but it demonstrates
+	         retrieving a big chunk of data into a Telerik grid and providing the built-in filtering.  
+
+	States - provides state-level information and collection data.  Initially, it was intended to display all of a state's available information.  However,
+	         in reviewing the data, I realized each record was a cumulative total.  So I modified the page to include a date filter that is required.  Thus only 
+			 a single row is displayed in the grid.  
+
+I have implemented this application with only two tiers in the stack.  This implies that the Blazor component services will be shaping API data from the COVID site into view models used to render the components.  Its
+possible that a domain tier would be approriate in a production appliction that accesses an external API.  However, since this is a demo app, I didn't want to over complicate things.  
 
 	COVID.ApiClient - this contains the wrapper services that handle the API requests and responses.  
 
@@ -14,6 +27,19 @@ Other projects in the solution include the following
 
 	COVID.Tests     - this contains tests for both projects.  
 
+------------
+Instructions
+------------
+This application is not deployed anywhere.  So to run it, it requires that it be opened in some flavor of Visual Studio - it has been developed in Visual Studio Community 2022.
+
+Also, it uses Telerik for Blazor which requires access to their nuget library.  The instructions indicated that I could use it so I am assuming that you folks will have it available.  
+I had to download it in demo form, so its package reference looks like the following
+
+    <PackageReference Include="Telerik.UI.for.Blazor.Trial" Version="7.1.0" />
+
+You will need to modify this to reflect the non-trial library and the approriate version.  I don't think this will affect anything, but I suppose its possible.  
+
+Once that is completed, set the COVID.Web project as the startup project and you should be able to run it within Visual Studio.
 
 
 -------------------
@@ -99,4 +125,23 @@ Note that I had to include the Base URL for one of the service methods but not f
 
 - I had left things off with the API client project largely complete.  In the process of the getting the grid to render, I discovered a bug in one of the API client methods.   
   Specifically, the GetAllAsync() method for states was pulling from the current.json file instead of the daily.json file.  That got fixed and I went ahead and added another
-  method to the interface for 
+  method to the interface for the current.json file.  
+
+1/5/2025 - Completed the States page
+------------------------------------
+
+- I had a States functioning page.  But while reviewing it, I noticed that each record had a cumulative total and it didn't really make sense to display multiple rows
+  in the grid.  So I modified the page such that State and Collection Date filters are always in effect - thus only one row is displayed in the grid.
+
+- Another option that comes to mind, would be to calculate the deltas which would yield daily totals.  It's unclear how useful this would be in grid form though.
+
+- The date filter only works with an API end point that yields a single record.  I didn't realize this when I changed to the component service to call it so I got a bug.  
+  Instead of a major change the page, a minor change to the component service was made such that the single record is converted into a list containing that single record. 
+  
+- Ran into to problems with the date parameter.  Originally, the plan was to get the min and max dates from the data.  And the default date would be the max.  However, 
+  this logic was flawed since the data is not available until after it is retrieved so we cannot determine the default date.  So a couple of hacks were introduced.
+
+  * StatesPageComponentService has the default date of 3/7/21 hardcoded
+  * ComponentBuildFilterForm.razor has the min and max dates hardcoded
+
+  The fix would probably be to add an API service method that identifies the min and max dates from the entire historical data set.  But that will have to wait until v2.

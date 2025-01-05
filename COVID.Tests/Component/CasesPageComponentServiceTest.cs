@@ -13,17 +13,17 @@ namespace COVID.Component.Tests
     public sealed class CasesPageComponenetServiceTest
     {
         IServiceProvider _serviceProvider;
-        IComponenentService<CasesPageVM> _casesPageComponentService;
+        IComponenentService<HistoricalPageVM> _casesPageComponentService;
 
         public CasesPageComponenetServiceTest()
         {
             var services = new ServiceCollection();
             services.AddScoped<IApiClientService<StateSummary>, StatesApiClientService>();
-            services.AddScoped<IComponenentService<CasesPageVM>, CasesPageComponentService>();
+            services.AddScoped<IComponenentService<HistoricalPageVM>, HistoricalPageComponentService>();
 
             _serviceProvider = services.BuildServiceProvider();
 
-            _casesPageComponentService = _serviceProvider.GetService<IComponenentService<CasesPageVM>>();
+            _casesPageComponentService = _serviceProvider.GetService<IComponenentService<HistoricalPageVM>>();
 
         }
 

@@ -4,6 +4,7 @@ using COVID.ApiClient.Services;
 using COVID.Component.Models;
 using COVID.Web.Interfaces;
 using COVID.Web.Services;
+using COVID.Web.Services.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +17,9 @@ builder.Services.AddTelerikBlazor();
 builder.Services.AddScoped<IApiClientService<StateSummary>, StatesApiClientService>();
 builder.Services.AddScoped<IStatesInfoApiClientService, StatesInfoApiClientService>();
 
-builder.Services.AddScoped<IComponenentService<CasesPageVM>, CasesPageComponentService>();
+builder.Services.AddScoped<IComponenentService<HistoricalPageVM>, HistoricalPageComponentService>();
 builder.Services.AddScoped<IComponenentService<StatesPageVM>, StatesPageComponentService>();
+builder.Services.AddScoped<IDateHelperService, DateHelperService>();
 
 var app = builder.Build();
 

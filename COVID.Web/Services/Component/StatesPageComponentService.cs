@@ -11,11 +11,13 @@ namespace COVID.Web.Services
     {
         private readonly IApiClientService<StateSummary> _statesApiClientService;
         private readonly IStatesInfoApiClientService _statesInfoApiClientService;
+        private readonly IDateHelperService _dateHelperService;
 
-        public StatesPageComponentService(IApiClientService<StateSummary> statesApiClientService, IStatesInfoApiClientService statesInfoApiClientService)
+        public StatesPageComponentService(IApiClientService<StateSummary> statesApiClientService, IStatesInfoApiClientService statesInfoApiClientService, IDateHelperService dateHelperService)
         {
             _statesApiClientService = statesApiClientService;
             _statesInfoApiClientService = statesInfoApiClientService;
+            _dateHelperService = dateHelperService;
         }
 
         public async Task<StatesPageVM> BuildAsync(ComponentBuildFilter filter)
@@ -46,7 +48,7 @@ namespace COVID.Web.Services
 
             if (filter.CollectionDate != DateTime.MinValue)
             {
-                collectionDate = UnParseDate(filter.CollectionDate);
+                collectionDate = _dateHelperService.UnParseDate(filter.CollectionDate);
             }
 
             var stateSummariesData = await _statesApiClientService.GetByDateAsync(currState.Abbreviation, collectionDate);
@@ -55,7 +57,7 @@ namespace COVID.Web.Services
             {
                 new StateSummaryListItem
                 {
-                    Date = ParseDate(stateSummariesData.date) ,
+                    Date = _dateHelperService.ParseDate(stateSummariesData.date) ,
                     State = stateSummariesData.state ,
                     NumTotal = stateSummariesData.total ?? 0,
                     NumPositive = stateSummariesData.positive ?? 0,
@@ -77,28 +79,6 @@ namespace COVID.Web.Services
             };
 
             return vm;
-        }
-        private DateTime ParseDate(int date)
-        {
-            string dateStr = date.ToString();
-
-            string year = dateStr.Substring(0, 4);
-            string month = dateStr.Substring(4, 2);
-            string day = dateStr.Substring(6, 2);
-
-            string dateToParse = string.Format("{0}/{1}/{2}", month, day, year);
-
-            DateTime parsedDate = DateTime.Parse(dateToParse);
-
-            return parsedDate;
-        }
-        private string UnParseDate(DateTime date)
-        {
-            string year = date.Year.ToString();
-            string month = date.Month.ToString("D2");
-            string day = date.Day.ToString("D2");
-
-            return string.Format("{0}{1}{2}", year, month, day);
         }
     }
 }

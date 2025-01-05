@@ -1,15 +1,18 @@
-﻿@page "/Cases"
+﻿@page "/AllData"
 @using COVID.Component.Models
 @using COVID.Web.Components
 @using COVID.Web.Filters
 @using COVID.Web.Interfaces
 
-<PageTitle>COVID Cases by State</PageTitle>
+<PageTitle>COVID Cases - Full Historical Data</PageTitle>
 
 
-<h1>COVID Cases by State</h1>
+<h1>Full Historical Data</h1>
 
-<p>This page allows you to view </p>
+<p>
+    This page allows you to view all of the information available from the API.  It includes a row for every state with cumulative totals for each month of data collected.
+    The built in Telerik grid filtering functionality is made available to refine searches.
+</p>
 
 
 <TelerikLoaderContainer OverlayThemeColor="@ThemeConstants.Loader.ThemeColor.Light"
@@ -28,13 +31,13 @@
 
 @code {
 
-    [Inject] IComponenentService<CasesPageVM> casesPageComponentService { get; set; }
+    [Inject] IComponenentService<HistoricalPageVM> historicalPageComponentService { get; set; }
 
     private ComponentBuildFilter filter = new ComponentBuildFilter();
-    private CasesPageVM vm { get; set; }
+    private HistoricalPageVM vm { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        vm = await casesPageComponentService.BuildAsync(filter);  
+        vm = await historicalPageComponentService.BuildAsync(filter);
     }
 }

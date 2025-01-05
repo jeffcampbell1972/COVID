@@ -7,22 +7,24 @@ using COVID.Web.Filters;
 
 namespace COVID.Web.Services
 {
-    public class CasesPageComponentService : IComponenentService<CasesPageVM>
+    public class HistoricalPageComponentService : IComponenentService<HistoricalPageVM>
     {
         private readonly IApiClientService<StateSummary> _statesApiClientService;
+        private readonly IDateHelperService _dateHelperService;
 
-        public CasesPageComponentService(IApiClientService<StateSummary> statesApiClientService)
+        public HistoricalPageComponentService(IApiClientService<StateSummary> statesApiClientService, IDateHelperService dateHelperService)
         {
             _statesApiClientService = statesApiClientService;
+            _dateHelperService = dateHelperService;
         }
 
-        public async Task<CasesPageVM> BuildAsync(ComponentBuildFilter filter)
+        public async Task<HistoricalPageVM> BuildAsync(ComponentBuildFilter filter)
         {
             var stateSummaries = await _statesApiClientService.GetAllAsync();
 
             var listItems = stateSummaries.Select(x => new StateSummaryListItem
             {
-                Date = ParseDate(x.date) ,
+                Date = _dateHelperService.ParseDate(x.date) ,
                 State = x.state ,
                 NumTotal = x.total ?? 0,
                 NumPositive = x.positive ?? 0,
@@ -32,26 +34,12 @@ namespace COVID.Web.Services
             .OrderByDescending(x => x.NumPositive)
             .ToList();
 
-            var vm = new CasesPageVM
+            var vm = new HistoricalPageVM
             {
                 Cases = listItems
             };
 
             return vm;
-        }
-        private DateTime ParseDate(int date)
-        {
-            string dateStr = date.ToString();
-
-            string year = dateStr.Substring(0, 4);
-            string month = dateStr.Substring(4, 2);
-            string day = dateStr.Substring(6, 2);
-
-            string dateToParse = string.Format("{0}/{1}/{2}", month, day, year);
-
-            DateTime parsedDate = DateTime.Parse(dateToParse);
-
-            return parsedDate;
         }
     }
 }
