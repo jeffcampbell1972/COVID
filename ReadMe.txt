@@ -1,31 +1,63 @@
-COVID
------
-The COVID app displays information provided by the COVID Tracking Project's API.  
-
 --------
 Overview
 --------
-There are three pages supported in this application.
+The COVID app displays information provided by the COVID Tracking Project's API.  There are three pages supported in this application.
 
-	Index  - landing page for the app
+	Index  - landing page 
 
-	Cases  - provides the full historical list of data from the API.  It is unclear if there are real-life use-cases for this page but it demonstrates
-	         retrieving a big chunk of data into a Telerik grid and providing the built-in filtering.  
+	Historical  - provides the full historical list of data from the API.  It is unclear if there are real-life use-cases for this page but it demonstrates
+	              retrieving a big chunk of data into a Telerik grid and providing the built-in filtering.  
 
-	States - provides state-level information and collection data.  Initially, it was intended to display all of a state's available information.  However,
-	         in reviewing the data, I realized each record was a cumulative total.  So I modified the page to include a date filter that is required.  Thus only 
-			 a single row is displayed in the grid.  
+	States      - provides state-level information and collection data.  Initially, it was intended to display all of a state's available information.  However,
+	              in reviewing the data, I realized each record was a cumulative total.  So I modified the page to include a date filter that is required.  
+				  Thus only a single row is displayed in the grid.  
 
-I have implemented this application with only two tiers in the stack.  This implies that the Blazor component services will be shaping API data from the COVID site into view models used to render the components.  Its
-possible that a domain tier would be approriate in a production appliction that accesses an external API.  However, since this is a demo app, I didn't want to over complicate things.  
+The application was implemented with only two tiers in the stack.  This implies that the Blazor component services will be shaping API data from the COVID site 
+into view models used to render the components.  Its possible that a domain tier would be approriate in a production appliction that accesses an external API.  
+However, since this is a demo app, I didn't want to overcomplicate things.  The two tiers are listed below
 
-	COVID.ApiClient - this contains the wrapper services that handle the API requests and responses.  
+	COVID.ApiClient - this contains the wrapper services that handle the API requests and responses.  Each method in these services will makes requests for and
+	                  handle responses for a single end-point in the API.  Note that RestSharp is used to make the requests.
 
-	COVID.Web       - this contains a server-side Blazor website that displays information retrieved from the API
+	COVID.Web       - this contains a server-side Blazor website that displays information retrieved from the API.  It is designed such that each page has a 
+	                  corresponding view model and view model service - the view model service will call method(s) from and ApiClient service to retrieve information 
+					  requied render the page.  Also, a few examples of shared components were included - data is provided to these components via parameters - another
+					  approach might have been to have a view model and service for each component.  
 
 Other projects in the solution include the following
 
-	COVID.Tests     - this contains tests for both projects.  
+	COVID.Tests     - this contains tests for both projects.  Much more testing would accompany a production application.
+
+-----
+Notes
+-----
+* Most methods are asyncrhonous via usage of async/await  
+* All logic has been implemented as services that are derived from interfaces and made available via the dependency injection framework
+* Did not implement any custom Exceptions - these would likely exist in a production app
+* LINQ is utilized in a few places.  Specifically, they are used to shape the display objects such as ListItems.  
+* No unit testing was done.  This would involve created a fake data source - I have done this for databases by using an in-memory database - however, no experience in
+  created mock data to simulate an API call.  Seems doable, though.
+* No logging is done as would be required in a production app.  I have recently learned of a product named "seq" which is easy to use.  In production, all exceptions would
+  need to be logged.  And logging can be used to track usage of the app.
+* Config file is not being utilized.  At a minimum, the base URL for the API should be persisted there - it is currently hard-coded in several places - I will likely clean
+  this up and hopefully remember to remove this note.
+* Each of the end-points on the API has a schema defined with it.  Several appear to be have the same properties so the model within the ApiClient project only contains 3 classes.  
+  Testing works on each of the end-points (famous last words) so I think this is okay.  
+* As noted above, only two tiers are supported.  However, it might make sense to introduce a couple of others for better abstraction
+
+  - Domain     : a domain would allow the data to shaped and put into context.  So, if the requirements stated that the application should display the daily amounts, then this
+                 would be place for that logic to reside.  Also, its possible that the requirement might want to blend-in data from another API or database - if so, then this
+		    	 is also the place for such logic.  
+
+				 Note that I always use a domain layer in database-driven apps.  If I have my way, I prefer to define an Entity Framework for the data access to the database.
+				 This eliminates the need for almost all stored procedures.  My original approach was to write custom services for each data point each of which interacts
+				 with a specific DbSet.  However, I discovered the repository pattern and was able to eliminate all of the data access services too.  I currently implement
+				 the actual logic at the domain-level by injecting instances of one or more data point repositories and shaping the data accordingly.  
+
+  - API        : an internal API that serves up domain data could then be introduced to provide the shaped data to more than one application client.  For example, the same data
+                 and business rules would be provided and applied to the Blazor website as a Maui built phone app.  
+
+  - API Client : wrapper services that call the internal API referenced above
 
 ------------
 Instructions

@@ -5,6 +5,7 @@ using COVID.Component.Models;
 using COVID.Web.Filters;
 using COVID.Web.Interfaces;
 using COVID.Web.Services;
+using COVID.Web.Services.Helper;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace COVID.Component.Tests
@@ -18,6 +19,7 @@ namespace COVID.Component.Tests
         public CasesPageComponenetServiceTest()
         {
             var services = new ServiceCollection();
+            services.AddScoped<IDateHelperService, DateHelperService>();
             services.AddScoped<IApiClientService<StateSummary>, StatesApiClientService>();
             services.AddScoped<IComponenentService<HistoricalPageVM>, HistoricalPageComponentService>();
 
